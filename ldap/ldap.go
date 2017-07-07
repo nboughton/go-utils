@@ -54,6 +54,9 @@ func Connect(c Config) (*SangerLdap, error) {
 // GetEntry attempts to retrieve a users LDAP record based on their numerical UID or string UID,
 // and returns the desired attributes in the attr arg.
 // For example: entry, _ := l.GetEntry(0, "nb5", []string{"cn", "mail"})
+// OR         : entry, _ := l.GetEntry(1001, "", []string{"cn", "mail"})
+// GetEntry prioritises UIDStr as the preferred seach term because it is considered to be more
+// likely to be known.
 func (l *SangerLdap) GetEntry(UIDnum uint32, UIDStr string, attr []string) (*ldap.Entry, error) {
 	// Constuct search request
 	searchRequest := ldap.NewSearchRequest(
