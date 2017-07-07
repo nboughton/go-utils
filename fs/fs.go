@@ -5,7 +5,7 @@ import (
 	"path/filepath"
 )
 
-// getBinPath returns the absolute path to the directory of the running binary
-func getBinPath() (string, error) {
+// GetBinPath returns the absolute path to the directory of the running binary
+func GetBinPath() (string, error) {
 	return filepath.Abs(filepath.Dir(os.Args[0]))
 }
