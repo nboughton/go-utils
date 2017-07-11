@@ -27,7 +27,8 @@ var (
 	DefaultAttr = []string{"uid", "mail", "cn"}
 )
 
-// ConnectTLS requests a secure binding and requires a Host, Port, User and Pass
+// ConnectTLS requests a secure binding and requires a Host, Port, User and Pass, this is required if you're
+// performing any kind of admin action.
 func ConnectTLS(c Config) (*SangerLdap, error) {
 	l, err := ldap.DialTLS("tcp", fmt.Sprintf("%s:%d", c.Host, c.Port), &tls.Config{InsecureSkipVerify: true})
 	if err != nil {
@@ -41,7 +42,7 @@ func ConnectTLS(c Config) (*SangerLdap, error) {
 	return &SangerLdap{l, c}, nil
 }
 
-// Connect requests and anonymous binding that requires only a Host and Port
+// Connect requests and anonymous binding that requires only a Host and Port. This can only be used to run queries
 func Connect(c Config) (*SangerLdap, error) {
 	// Anonymous LDAP connection
 	l, err := ldap.Dial("tcp", fmt.Sprintf("%s:%d", c.Host, c.Port))

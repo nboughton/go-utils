@@ -10,9 +10,9 @@ var (
 	mailHost = "mail.sanger.ac.uk"
 )
 
-// SendEmail provides a wrapper for the usual boilerplate to reduce the
+// Send provides a wrapper for the usual boilerplate to reduce the
 // hassle of programatically sending emails within the Sanger.
-func SendEmail(from, to, subject, msg string) error {
+func Send(from, to, subject, msg string) error {
 	// Format the msg text so we get a subject
 	msgFmt := fmt.Sprintf("To: %s\r\nSubject: %s\r\n\r\n%s\r\n", to, subject, msg)
 
