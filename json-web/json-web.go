@@ -11,7 +11,7 @@ type JSON struct {
 	Data   interface{} `json:"data"`
 }
 
-func (j JSON) Write(w http.ResponseWriter) {
+func (j JSON) Write(w http.ResponseWriter) error {
 	w.Header().Set("Content-Type", "application/json; charset=utf-8")
-	json.NewEncoder(w).Encode(j)
+	return json.NewEncoder(w).Encode(j)
 }
