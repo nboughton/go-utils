@@ -16,8 +16,8 @@ type Config struct {
 	BaseDN string `json:"baseDN"`
 }
 
-// SangerLdap wraps ldap.Conn so that methods can be attached to it for convenience
-type SangerLdap struct {
+// Conn wraps ldap.Conn so that methods can be attached to it for convenience
+type Conn struct {
 	*ldap.Conn
 	Conf Config
 }
@@ -29,27 +29,27 @@ var (
 
 // ConnectTLS requests a secure binding and requires a Host, Port, User and Pass, this is required if you're
 // performing any kind of admin action.
-func ConnectTLS(c Config) (*SangerLdap, error) {
+func ConnectTLS(c Config) (*Conn, error) {
 	l, err := ldap.DialTLS("tcp", fmt.Sprintf("%s:%d", c.Host, c.Port), &tls.Config{InsecureSkipVerify: true})
 	if err != nil {
-		return &SangerLdap{}, err
+		return &Conn{}, err
 	}
 
 	if err := l.Bind(fmt.Sprintf("cn=%s,%s", c.User, c.BaseDN), c.Pass); err != nil {
-		return &SangerLdap{}, err
+		return &Conn{}, err
 	}
 
-	return &SangerLdap{l, c}, nil
+	return &Conn{l, c}, nil
 }
 
 // Connect requests and anonymous binding that requires only a Host and Port. This can only be used to run queries
-func Connect(c Config) (*SangerLdap, error) {
+func Connect(c Config) (*Conn, error) {
 	// Anonymous LDAP connection
 	l, err := ldap.Dial("tcp", fmt.Sprintf("%s:%d", c.Host, c.Port))
 	if err != nil {
-		return &SangerLdap{}, err
+		return &Conn{}, err
 	}
-	return &SangerLdap{l, c}, nil
+	return &Conn{l, c}, nil
 }
 
 // GetEntry attempts to retrieve a users LDAP record based on their numerical UID or string UID,
@@ -58,7 +58,7 @@ func Connect(c Config) (*SangerLdap, error) {
 // OR         : entry, _ := l.GetEntry(1001, "", []string{"cn", "mail"})
 // GetEntry prioritises UIDStr as the preferred seach term because it is considered to be more
 // likely to be known.
-func (l *SangerLdap) GetEntry(UIDnum uint32, UIDStr string, attr []string) (*ldap.Entry, error) {
+func (l *Conn) GetEntry(UIDnum uint32, UIDStr string, attr []string) (*ldap.Entry, error) {
 	// Constuct search request
 	searchRequest := ldap.NewSearchRequest(
 		fmt.Sprintf("ou=people,%s", l.Conf.BaseDN), // DN
