@@ -22,6 +22,12 @@ type Conn struct {
 	Conf Config
 }
 
+// Entry wraps ldap.Entry so that it can be extended
+type Entry struct {
+	*ldap.Entry
+	*Conn
+}
+
 var (
 	// DefaultAttr contains the most likely LDAP Attributes to search for
 	DefaultAttr = []string{"uid", "mail", "cn"}
@@ -58,7 +64,7 @@ func Connect(c Config) (*Conn, error) {
 // OR         : entry, _ := l.GetEntry(1001, "", []string{"cn", "mail"})
 // GetEntry prioritises UIDStr as the preferred seach term because it is considered to be more
 // likely to be known.
-func (l *Conn) GetEntry(UIDnum uint32, UIDStr string, attr []string) (*ldap.Entry, error) {
+func (l *Conn) GetEntry(UIDnum uint32, UIDStr string, attr []string) (*Entry, error) {
 	// Constuct search request
 	searchRequest := ldap.NewSearchRequest(
 		fmt.Sprintf("ou=people,%s", l.Conf.BaseDN), // DN
@@ -75,12 +81,12 @@ func (l *Conn) GetEntry(UIDnum uint32, UIDStr string, attr []string) (*ldap.Entr
 	// Run search and process results
 	res, err := l.Search(searchRequest)
 	if err != nil {
-		return &ldap.Entry{}, fmt.Errorf("LDAP search error: %s", err.Error())
+		return &Entry{&ldap.Entry{}, l}, fmt.Errorf("LDAP search error: %s", err.Error())
 	} else if len(res.Entries) != 1 {
-		return &ldap.Entry{}, fmt.Errorf("Invalid UID (%d/%s), %d results matched", UIDnum, UIDStr, len(res.Entries))
+		return &Entry{&ldap.Entry{}, l}, fmt.Errorf("Invalid UID (%d/%s), %d results matched", UIDnum, UIDStr, len(res.Entries))
 	}
 
-	return res.Entries[0], nil
+	return &Entry{res.Entries[0], l}, nil
 }
 
 func selectUIDFilter(n uint32, s string) string {
@@ -88,4 +94,34 @@ func selectUIDFilter(n uint32, s string) string {
 		return fmt.Sprintf("(uid=%s)", s)
 	}
 	return fmt.Sprintf("(uidNumber=%d)", n)
+}
+
+// Update updates an ldap entry
+func (e *Entry) Update(attr string, data []string, overwrite bool) error {
+	// Create modify request object
+	m := ldap.NewModifyRequest(e.DN)
+
+	exists := false
+	if len(e.GetAttributeValue(attr)) != 0 {
+		exists = true
+	}
+
+	// Either the attribute isn't set or we wish to overwrite it either way
+	if overwrite || !exists {
+		if exists {
+			// Modify replace contents of attribute
+			m.Replace(attr, data)
+		} else {
+			// Add new data
+			m.Add(attr, data)
+		}
+
+		if err := e.Modify(m); err != nil {
+			return fmt.Errorf("Could not modify LDAP record: %s", err)
+		}
+	} else if !overwrite && exists {
+		return fmt.Errorf("Data exists and overwrite not set. No change made.")
+	}
+
+	return nil
 }
