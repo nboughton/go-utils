@@ -83,7 +83,11 @@ func (l *Conn) GetEntry(UIDnum uint32, UIDStr string, attr []string) (*Entry, er
 	if err != nil {
 		return &Entry{&ldap.Entry{}, l}, fmt.Errorf("LDAP search error: %s", err.Error())
 	} else if len(res.Entries) != 1 {
-		return &Entry{&ldap.Entry{}, l}, fmt.Errorf("Invalid UID (%d/%s), %d results matched", UIDnum, UIDStr, len(res.Entries))
+		uids := []string{}
+		for _, e := range res.Entries {
+			uids = append(uids, e.GetAttributeValue("uid"))
+		}
+		return &Entry{&ldap.Entry{}, l}, fmt.Errorf("%d results matched for (%d/%s): %v\n", len(uids), UIDnum, UIDStr, uids)
 	}
 
 	return &Entry{res.Entries[0], l}, nil
