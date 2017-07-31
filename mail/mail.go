@@ -11,13 +11,14 @@ var (
 	mailHost = ""
 )
 
-// SetMailHost allows the developer to set the host through which sent mail is routed
-func SetMailHost(str string) {
+// SetHost allows the developer to set the mail host through which sent mail is routed
+func SetHost(str string) {
 	mailHost = str
 }
 
 // Send provides a wrapper for the usual boilerplate to reduce the
-// hassle of programatically sending emails within the Sanger.
+// hassle of programatically sending emails. Don't forget to assign
+// a mailhost BEFORE attempting to send mail
 func Send(from, to, subject, msg string) error {
 	// Format the msg text so we get a subject
 	msgFmt := fmt.Sprintf("To: %s\r\nSubject: %s\r\n\r\n%s\r\n", to, subject, msg)
