@@ -9,16 +9,16 @@ import (
 
 // JSON is a simple wrapper for json that is then returned to the user
 type JSON struct {
-	Status int         `json:"-"` // Do not encode status, this goes in the response header
-	Data   interface{} `json:"data"`
+	Status int         `json:"-"`    // Do not encode status, this goes in the response header
+	Data   interface{} `json:"data"` // data should wrap the contents of the response
 }
 
-// New creates a new JSON object which can variably accept data
+// New creates a new JSON object which can accept data
 func New(status int, data interface{}) *JSON {
 	return &JSON{Status: status, Data: data}
 }
 
-// Write sends the JSON object back to the client via browser via the original ResponseWriter
+// Write sends the JSON object back to the client browser via the original ResponseWriter
 func (j *JSON) Write(w http.ResponseWriter) error {
 	w.Header().Set("Status", strconv.Itoa(j.Status))
 	w.Header().Set("Content-Type", "application/json; charset=utf-8")
