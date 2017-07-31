@@ -1,3 +1,4 @@
+// Package fs is for utility functions related to dealing the filesystem
 package fs
 
 import (

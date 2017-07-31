@@ -1,3 +1,4 @@
+// Package ldap is for general use case functions when dealing with Sanger ldap
 package ldap
 
 import (

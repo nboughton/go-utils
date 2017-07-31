@@ -1,3 +1,5 @@
+// Package mail is for removing the need to write boilerplate when sending email
+// from a program within the Sanger network
 package mail
 
 import (
