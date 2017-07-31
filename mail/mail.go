@@ -1,5 +1,4 @@
-// Package mail is for removing the need to write boilerplate when sending email
-// from a program within the Sanger network
+// Package mail is for removing the need to write boilerplate when sending email from a CLI app
 package mail
 
 import (
@@ -9,8 +8,13 @@ import (
 )
 
 var (
-	mailHost = "mail.sanger.ac.uk"
+	mailHost = ""
 )
+
+// SetMailHost allows the developer to set the host through which sent mail is routed
+func SetMailHost(str string) {
+	mailHost = str
+}
 
 // Send provides a wrapper for the usual boilerplate to reduce the
 // hassle of programatically sending emails within the Sanger.
