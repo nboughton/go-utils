@@ -17,18 +17,6 @@ type Config struct {
 	BaseDN string `json:"baseDN"`
 }
 
-// Conn wraps ldap.Conn so that methods can be attached to it for convenience
-type Conn struct {
-	*ldap.Conn
-	Conf Config
-}
-
-// Entry wraps ldap.Entry so that it can be extended
-type Entry struct {
-	*ldap.Entry
-	*Conn
-}
-
 var (
 	// DefaultAttr contains the most likely LDAP Attributes to search for
 	DefaultAttr = []string{"uid", "mail", "cn"}
@@ -57,6 +45,12 @@ func Connect(c Config) (*Conn, error) {
 		return &Conn{}, err
 	}
 	return &Conn{l, c}, nil
+}
+
+// Conn wraps ldap.Conn so that methods can be attached to it for convenience
+type Conn struct {
+	*ldap.Conn
+	Conf Config
 }
 
 // GetEntry attempts to retrieve a users LDAP record based on their numerical UID or string UID,
@@ -99,6 +93,12 @@ func selectUIDFilter(n uint32, s string) string {
 		return fmt.Sprintf("(uid=%s)", s)
 	}
 	return fmt.Sprintf("(uidNumber=%d)", n)
+}
+
+// Entry wraps ldap.Entry so that it can be extended
+type Entry struct {
+	*ldap.Entry
+	*Conn
 }
 
 // Update updates an ldap entry
