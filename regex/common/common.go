@@ -1,6 +1,6 @@
-// Package commonregex supplies a few very commonly used patterns found in CLI apps
+// Package common supplies a few very commonly used patterns found in CLI apps
 // namely case insensitive matching for yes/no questions
-package commonregex
+package common
 
 import (
 	"regexp"
