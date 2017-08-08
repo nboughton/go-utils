@@ -1,5 +1,5 @@
-// Package jsonweb is for creating and returning json encoded data in web applications
-package jsonweb
+// Package web is for creating and returning json encoded data in web applications
+package web
 
 import (
 	"encoding/json"
