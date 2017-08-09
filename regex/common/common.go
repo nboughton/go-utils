@@ -8,7 +8,8 @@ import (
 
 // Exported vars all common regex patterns
 var (
-	YN  = regexp.MustCompile(`(?i)^(y(es|)|n(o|))$`)
-	Yes = regexp.MustCompile(`(?i)^y(es|)$`)
-	No  = regexp.MustCompile(`(?i)^n(o|)$`)
+	YN      = regexp.MustCompile(`(?i)^(y(es|)|n(o|))$`)
+	Yes     = regexp.MustCompile(`(?i)^y(es|)$`)
+	No      = regexp.MustCompile(`(?i)^n(o|)$`)
+	HTMLTag = regexp.MustCompile(`(<[^>]*>)`)
 )
