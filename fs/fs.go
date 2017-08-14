@@ -2,6 +2,7 @@
 package fs
 
 import (
+	"math"
 	"os"
 	"os/user"
 	"path/filepath"
@@ -9,6 +10,42 @@ import (
 	"syscall"
 	"time"
 )
+
+// DiskFree packages the same types of information one gets from the *nix df cmd
+type DiskFree struct {
+	Total       int64
+	Used        int64
+	Avail       int64
+	PercentUsed int
+}
+
+// Exported constants for file sizes
+const (
+	BS = 1024    // Blocksize
+	KB = BS      // Kilobyte
+	MB = KB * BS // Megabyte
+	GB = MB * BS // Gigabyte
+	TB = GB * BS // Terabyte
+	PB = TB * BS // Petabyte
+)
+
+// Df returns the disk free information for a single mounted device values in KB
+func Df(mountPoint string) (f DiskFree, err error) {
+	s := syscall.Statfs_t{}
+	if err = syscall.Statfs(mountPoint, &s); err != nil {
+		return f, err
+	}
+
+	f = DiskFree{
+		Total: int64(s.Blocks) * MB / int64(s.Bsize),
+		Used:  int64(s.Blocks-s.Bfree) * MB / int64(s.Bsize),
+	}
+
+	f.Avail = f.Total - f.Used
+	f.PercentUsed = int(math.Ceil(float64(f.Used/f.Total) * 100))
+
+	return f, err
+}
 
 // GetBinPath returns the absolute path to the directory of the running binary
 func GetBinPath() (string, error) {
