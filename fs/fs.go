@@ -3,7 +3,9 @@ package fs
 
 import (
 	"os"
+	"os/user"
 	"path/filepath"
+	"strconv"
 	"syscall"
 	"time"
 )
@@ -16,6 +18,13 @@ func GetBinPath() (string, error) {
 // GetUID returns the Unix user id for f
 func GetUID(f os.FileInfo) int {
 	return int(f.Sys().(*syscall.Stat_t).Uid)
+}
+
+// GetUname returns the Unix username for f
+func GetUname(f os.FileInfo) string {
+	uid := strconv.Itoa(GetUID(f))
+	u, _ := user.LookupId(uid)
+	return u.Username
 }
 
 // YearsOld returns the number of years since f modTime was last changed
