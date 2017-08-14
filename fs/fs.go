@@ -14,8 +14,8 @@ func GetBinPath() (string, error) {
 }
 
 // GetUID returns the Unix user id for f
-func GetUID(f os.FileInfo) uint32 {
-	return f.Sys().(*syscall.Stat_t).Uid
+func GetUID(f os.FileInfo) int {
+	return int(f.Sys().(*syscall.Stat_t).Uid)
 }
 
 // YearsOld returns the number of years since f modTime was last changed
