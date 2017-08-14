@@ -4,12 +4,18 @@ package fs
 import (
 	"os"
 	"path/filepath"
+	"syscall"
 	"time"
 )
 
 // GetBinPath returns the absolute path to the directory of the running binary
 func GetBinPath() (string, error) {
 	return filepath.Abs(filepath.Dir(os.Args[0]))
+}
+
+// GetUID returns the Unix user id for f
+func GetUID(f os.FileInfo) uint32 {
+	return f.Sys().(*syscall.Stat_t).Uid
 }
 
 // YearsOld returns the number of years since f modTime was last changed
