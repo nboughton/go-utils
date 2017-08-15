@@ -1,5 +1,5 @@
-// Package common supplies a few very commonly used patterns found in CLI apps
-// namely case insensitive matching for yes/no questions
+// Package common supplies a few very commonly used patterns found in CLI/Web apps
+// namely case insensitive matching for yes/no questions and matching html tags
 package common
 
 import (
