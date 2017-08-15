@@ -72,19 +72,19 @@ func (df *DiskFree) PercentUsed() int {
 	return df.percentUsed
 }
 
-// GetBinPath returns the absolute path to the directory of the running binary
-func GetBinPath() (string, error) {
+// BinPath returns the absolute path to the directory of the running binary
+func BinPath() (string, error) {
 	return filepath.Abs(filepath.Dir(os.Args[0]))
 }
 
-// GetUID returns the Unix user id for f
-func GetUID(f os.FileInfo) int {
+// UID returns the Unix user id for f
+func UID(f os.FileInfo) int {
 	return int(f.Sys().(*syscall.Stat_t).Uid)
 }
 
-// GetUname returns the Unix username for f
-func GetUname(f os.FileInfo) string {
-	uid := strconv.Itoa(GetUID(f))
+// Uname returns the Unix username for f
+func Uname(f os.FileInfo) string {
+	uid := strconv.Itoa(UID(f))
 	u, _ := user.LookupId(uid)
 	return u.Username
 }
