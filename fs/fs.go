@@ -19,16 +19,18 @@ type DiskFree struct {
 	percentUsed int
 }
 
-// Exported constants for file sizes
+// Exported constants for file size calculations
 const (
-	KB = float64(1024) // Kilobyte
-	MB = KB * KB       // Megabyte
-	GB = MB * KB       // Gigabyte
-	TB = GB * KB       // Terabyte
-	PB = TB * KB       // Petabyte
+	KB = 1024    // Kilobyte
+	MB = KB * KB // Megabyte
+	GB = MB * KB // Gigabyte
+	TB = GB * KB // Terabyte
+	PB = TB * KB // Petabyte
 )
 
 // NewDf returns the disk free information for specified mount point in 1KB blocks
+// Values are stored as float64s in order to allow for a reasonable degree of accuracy when
+// dealing with large value numbers i.e 1.7GB, 3.4TB etc...
 func NewDf(mountPoint string) (f *DiskFree, err error) {
 	s := syscall.Statfs_t{}
 	if err = syscall.Statfs(mountPoint, &s); err != nil {
@@ -36,8 +38,8 @@ func NewDf(mountPoint string) (f *DiskFree, err error) {
 	}
 
 	f = &DiskFree{
-		total: (float64(s.Blocks) * float64(s.Bsize)),
-		used:  (float64(s.Blocks-s.Bfree) * float64(s.Bsize)),
+		total: float64(s.Blocks) * float64(s.Bsize),
+		used:  float64(s.Blocks-s.Bfree) * float64(s.Bsize),
 	}
 
 	f.avail = f.total - f.used
@@ -46,25 +48,28 @@ func NewDf(mountPoint string) (f *DiskFree, err error) {
 	return f, err
 }
 
-// Total takes a value type (fs.MB, fs.GB etc) and returns the appropriate value.
+// Total takes a value type (fs.MB, fs.GB etc) and returns the amount of total space
 // Example:
 //    df, _ := fs.NewDf("/mnt/fs")
 //    fmt.Println(df.Total(fs.GB))
-//
-// Floats are used in order to allow for a reasonable degree of accuracy when
-// dealing with large value numbers i.e GB and TB etc...
-func (df *DiskFree) Total(valType float64) float64 {
-	return df.total / valType
+func (df *DiskFree) Total(valType int) float64 {
+	return df.total / float64(valType)
 }
 
-// Used works the same way as Total but returns the amount of space currently used.
-func (df *DiskFree) Used(valType float64) float64 {
-	return df.used / valType
+// Used takes a value type (fs.MB, fs.GB etc) and returns the amount of space used.
+// Example:
+//    df, _ := fs.NewDf("/mnt/fs")
+//    fmt.Println(df.Used(fs.GB))
+func (df *DiskFree) Used(valType int) float64 {
+	return df.used / float64(valType)
 }
 
-// Avail works as above but returns the amount of space available
-func (df *DiskFree) Avail(valType float64) float64 {
-	return df.avail / valType
+// Avail takes a value type (fs.MB, fs.GB etc) and returns the amount of space available.
+// Example:
+//    df, _ := fs.NewDf("/mnt/fs")
+//    fmt.Println(df.Avail(fs.GB))
+func (df *DiskFree) Avail(valType int) float64 {
+	return df.avail / float64(valType)
 }
 
 // PercentUsed returns the percentage of space used as an int
@@ -77,29 +82,29 @@ func BinPath() (string, error) {
 	return filepath.Abs(filepath.Dir(os.Args[0]))
 }
 
-// UID returns the Unix user id for f
+// UID returns the Unix user id for file f
 func UID(f os.FileInfo) int {
 	return int(f.Sys().(*syscall.Stat_t).Uid)
 }
 
-// Uname returns the Unix username for f
+// Uname returns the Unix username for file f
 func Uname(f os.FileInfo) string {
 	uid := strconv.Itoa(UID(f))
 	u, _ := user.LookupId(uid)
 	return u.Username
 }
 
-// YearsOld returns the number of years since f modTime was last changed
+// YearsOld returns the number of years since file f modTime was last changed
 func YearsOld(f os.FileInfo) float64 {
 	return time.Now().Sub(f.ModTime()).Hours() / 24 / 365
 }
 
-// WeeksOld returns the number of weeks f modTime was last changed
+// WeeksOld returns the number of weeks file f modTime was last changed
 func WeeksOld(f os.FileInfo) float64 {
 	return time.Now().Sub(f.ModTime()).Hours() / 24 / 7
 }
 
-// DaysOld returns the number of days f modTime was last changed
+// DaysOld returns the number of days since file f modTime was last changed
 func DaysOld(f os.FileInfo) float64 {
 	return time.Now().Sub(f.ModTime()).Hours() / 24
 }
