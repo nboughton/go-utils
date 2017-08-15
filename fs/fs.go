@@ -13,7 +13,7 @@ import (
 	"time"
 )
 
-// DiskFree packages the same types of information one gets from the *nix "df" cmd
+// DiskFree packages the same types of information one gets from the GNU Linux "df" cmd
 type DiskFree struct {
 	total       float64
 	used        float64
@@ -86,7 +86,7 @@ func (df *DiskFree) PercentUsed() int {
 	return df.percentUsed
 }
 
-// Mount packages the information gleaned from the *nix command "mount" for a single device
+// Mount packages the information gleaned from the GNU Linux command "mount" for a single device
 type Mount struct {
 	Point  string
 	Device string
@@ -94,7 +94,7 @@ type Mount struct {
 	Args   []string
 }
 
-// Mounts returns an array of Mount structs, replicating the data gleaned from the *nix cmd "mount"
+// Mounts returns an array of Mount structs, replicating the data gleaned from the GNU Linux cmd "mount"
 func Mounts() (m []Mount, err error) {
 	o, err := exec.Command("mount").Output()
 	if err != nil {
