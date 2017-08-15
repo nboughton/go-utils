@@ -28,13 +28,11 @@ func Scan(file string, o interface{}) error {
 // Write marshalls json data in order to output it to a file. If the file exists it
 // is truncated to 0 bytes so that all data is overwritten.
 func Write(path string, v interface{}) error {
-	f, err := os.OpenFile(path, os.O_RDWR|os.O_CREATE, 0666)
+	f, err := os.Create(path)
 	if err != nil {
 		return err
 	}
 	defer f.Close()
-
-	f.Truncate(0)
 
 	b, err := json.Marshal(v)
 	if err != nil {
