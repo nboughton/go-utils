@@ -41,7 +41,7 @@ func NewDf(mountPoint string) (f *DiskFree, err error) {
 	}
 
 	f.avail = f.total - f.used
-	f.percentUsed = int(math.Ceil(float64(f.used) / float64(f.total) * 100))
+	f.percentUsed = int(math.Ceil(f.used / f.total * 100))
 
 	return f, err
 }
