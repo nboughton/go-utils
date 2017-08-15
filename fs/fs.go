@@ -131,17 +131,17 @@ func Uname(f os.FileInfo) string {
 	return u.Username
 }
 
-// YearsOld returns the number of years since file f modTime was last changed
-func YearsOld(f os.FileInfo) float64 {
-	return time.Now().Sub(f.ModTime()).Hours() / 24 / 365
-}
+type ageIncrement float64
 
-// WeeksOld returns the number of weeks since file f modTime was last changed
-func WeeksOld(f os.FileInfo) float64 {
-	return time.Now().Sub(f.ModTime()).Hours() / 24 / 7
-}
+// Exported constants for file age calculation
+const (
+	HOUR ageIncrement = 1
+	DAY               = HOUR * 24
+	WEEK              = DAY * 7
+	YEAR              = WEEK * 52
+)
 
-// DaysOld returns the number of days since file f modTime was last changed
-func DaysOld(f os.FileInfo) float64 {
-	return time.Now().Sub(f.ModTime()).Hours() / 24
+// Age returns the age of file f in the given increment valType
+func Age(f os.FileInfo, valType ageIncrement) float64 {
+	return time.Now().Sub(f.ModTime()).Hours() / float64(valType)
 }
