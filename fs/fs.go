@@ -4,14 +4,16 @@ package fs
 import (
 	"math"
 	"os"
+	"os/exec"
 	"os/user"
 	"path/filepath"
 	"strconv"
+	"strings"
 	"syscall"
 	"time"
 )
 
-// DiskFree packages the same types of information one gets from the *nix df cmd
+// DiskFree packages the same types of information one gets from the *nix "df" cmd
 type DiskFree struct {
 	total       float64
 	used        float64
@@ -79,6 +81,37 @@ func (df *DiskFree) Avail(valType sizeIncrement) float64 {
 // PercentUsed returns the percentage of space used as an int
 func (df *DiskFree) PercentUsed() int {
 	return df.percentUsed
+}
+
+// Mount packages the information gleaned from the *nix command "mount" for a single device
+type Mount struct {
+	Point  string
+	Device string
+	Type   string
+	Args   []string
+}
+
+// Mounts returns an array of Mount structs, replicating the data gleaned from the *nix cmd "mount"
+func Mounts() (m []Mount, err error) {
+	o, err := exec.Command("mount").Output()
+	if err != nil {
+		return nil, err
+	}
+
+	for _, line := range strings.Split(string(o), "\n") {
+		f := strings.Fields(line)
+
+		if len(f) == 6 {
+			m = append(m, Mount{
+				Point:  f[2],
+				Device: f[0],
+				Type:   f[4],
+				Args:   strings.Split(strings.Trim(f[5], "()"), ","),
+			})
+		}
+	}
+
+	return m, nil
 }
 
 // BinPath returns the absolute path to the directory of the running binary
