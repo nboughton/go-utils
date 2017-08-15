@@ -28,7 +28,8 @@ const (
 	PB = TB * KB // Petabyte
 )
 
-// NewDf returns the disk free information for specified mount point in 1KB blocks
+// NewDf creates a DiskFree struct for the specified mount point. One can then use the
+// struct methods to get the appropriate values in whatever size increment they wish.
 // Values are stored as float64s in order to allow for a reasonable degree of accuracy when
 // dealing with large value numbers i.e 1.7GB, 3.4TB etc...
 func NewDf(mountPoint string) (f *DiskFree, err error) {
