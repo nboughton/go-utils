@@ -21,12 +21,11 @@ type DiskFree struct {
 
 // Exported constants for file sizes
 const (
-	BS = 1024    // Blocksize
-	KB = BS      // Kilobyte
-	MB = KB * BS // Megabyte
-	GB = MB * BS // Gigabyte
-	TB = GB * BS // Terabyte
-	PB = TB * BS // Petabyte
+	KB = 1024    // Kilobyte
+	MB = KB * KB // Megabyte
+	GB = MB * KB // Gigabyte
+	TB = GB * KB // Terabyte
+	PB = TB * KB // Petabyte
 )
 
 // Df returns the disk free information for a single mounted device values in KB
@@ -37,12 +36,12 @@ func Df(mountPoint string) (f DiskFree, err error) {
 	}
 
 	f = DiskFree{
-		Total: int64(s.Blocks) * MB / int64(s.Bsize),
-		Used:  int64(s.Blocks-s.Bfree) * MB / int64(s.Bsize),
+		Total: (int64(s.Blocks) * s.Bsize) / KB,
+		Used:  (int64(s.Blocks-s.Bfree) * s.Bsize) / KB,
 	}
 
 	f.Avail = f.Total - f.Used
-	f.PercentUsed = int(math.Ceil(float64(f.Used/f.Total) * 100))
+	f.PercentUsed = int(math.Ceil(float64(f.Used) / float64(f.Total) * 100))
 
 	return f, err
 }
