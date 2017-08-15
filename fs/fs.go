@@ -19,15 +19,16 @@ type DiskFree struct {
 	percentUsed int
 }
 
-type fsCategory int
+// sizeIncrement provides a specific type for data size category conversion
+type sizeIncrement int64
 
 // Exported constants for file size calculations
 const (
-	KB fsCategory = 1024    // Kilobyte
-	MB            = KB * KB // Megabyte
-	GB            = MB * KB // Gigabyte
-	TB            = GB * KB // Terabyte
-	PB            = TB * KB // Petabyte
+	KB sizeIncrement = 1024    // Kilobyte
+	MB               = KB * KB // Megabyte
+	GB               = MB * KB // Gigabyte
+	TB               = GB * KB // Terabyte
+	PB               = TB * KB // Petabyte
 )
 
 // NewDf creates a DiskFree struct for the specified mount point. One can then use the
@@ -55,7 +56,7 @@ func NewDf(mountPoint string) (f *DiskFree, err error) {
 // Example:
 //    df, _ := fs.NewDf("/mnt/fs")
 //    fmt.Println(df.Total(fs.GB))
-func (df *DiskFree) Total(valType fsCategory) float64 {
+func (df *DiskFree) Total(valType sizeIncrement) float64 {
 	return df.total / float64(valType)
 }
 
@@ -63,7 +64,7 @@ func (df *DiskFree) Total(valType fsCategory) float64 {
 // Example:
 //    df, _ := fs.NewDf("/mnt/fs")
 //    fmt.Println(df.Used(fs.GB))
-func (df *DiskFree) Used(valType fsCategory) float64 {
+func (df *DiskFree) Used(valType sizeIncrement) float64 {
 	return df.used / float64(valType)
 }
 
@@ -71,7 +72,7 @@ func (df *DiskFree) Used(valType fsCategory) float64 {
 // Example:
 //    df, _ := fs.NewDf("/mnt/fs")
 //    fmt.Println(df.Avail(fs.GB))
-func (df *DiskFree) Avail(valType fsCategory) float64 {
+func (df *DiskFree) Avail(valType sizeIncrement) float64 {
 	return df.avail / float64(valType)
 }
 
