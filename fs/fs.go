@@ -99,7 +99,7 @@ func YearsOld(f os.FileInfo) float64 {
 	return time.Now().Sub(f.ModTime()).Hours() / 24 / 365
 }
 
-// WeeksOld returns the number of weeks file f modTime was last changed
+// WeeksOld returns the number of weeks since file f modTime was last changed
 func WeeksOld(f os.FileInfo) float64 {
 	return time.Now().Sub(f.ModTime()).Hours() / 24 / 7
 }
