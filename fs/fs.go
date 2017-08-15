@@ -55,6 +55,7 @@ func NewDf(mountPoint string) (f *DiskFree, err error) {
 }
 
 // Total takes a value type (fs.MB, fs.GB etc) and returns the amount of total space
+//
 // Example:
 //    df, _ := fs.NewDf("/mnt/fs")
 //    fmt.Println(df.Total(fs.GB))
@@ -63,6 +64,7 @@ func (df *DiskFree) Total(valType sizeIncrement) float64 {
 }
 
 // Used takes a value type (fs.MB, fs.GB etc) and returns the amount of space used.
+//
 // Example:
 //    df, _ := fs.NewDf("/mnt/fs")
 //    fmt.Println(df.Used(fs.GB))
@@ -71,6 +73,7 @@ func (df *DiskFree) Used(valType sizeIncrement) float64 {
 }
 
 // Avail takes a value type (fs.MB, fs.GB etc) and returns the amount of space available.
+//
 // Example:
 //    df, _ := fs.NewDf("/mnt/fs")
 //    fmt.Println(df.Avail(fs.GB))
@@ -143,7 +146,8 @@ const (
 	YEAR              = WEEK * 52
 )
 
-// Age returns the age of file f in the given increment valType
+// Age returns the age of file f in the given increment valType.
+//
 // Example:
 //    f, _ := os.Stat("/path/to/file")
 //    fmt.Println(fs.Age(f, fs.WEEK))
