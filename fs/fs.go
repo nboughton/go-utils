@@ -82,12 +82,12 @@ func BinPath() (string, error) {
 	return filepath.Abs(filepath.Dir(os.Args[0]))
 }
 
-// UID returns the Unix user id for file f
+// UID returns the Unix user id of the owner of file f
 func UID(f os.FileInfo) int {
 	return int(f.Sys().(*syscall.Stat_t).Uid)
 }
 
-// Uname returns the Unix username for file f
+// Uname returns the Unix username of the owner of file f
 func Uname(f os.FileInfo) string {
 	uid := strconv.Itoa(UID(f))
 	u, _ := user.LookupId(uid)
