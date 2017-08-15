@@ -13,37 +13,63 @@ import (
 
 // DiskFree packages the same types of information one gets from the *nix df cmd
 type DiskFree struct {
-	Total       int64
-	Used        int64
-	Avail       int64
-	PercentUsed int
+	total       float64
+	used        float64
+	avail       float64
+	percentUsed int
 }
 
 // Exported constants for file sizes
 const (
-	KB = 1024    // Kilobyte
-	MB = KB * KB // Megabyte
-	GB = MB * KB // Gigabyte
-	TB = GB * KB // Terabyte
-	PB = TB * KB // Petabyte
+	KB = float64(1024) // Kilobyte
+	MB = KB * KB       // Megabyte
+	GB = MB * KB       // Gigabyte
+	TB = GB * KB       // Terabyte
+	PB = TB * KB       // Petabyte
 )
 
-// Df returns the disk free information for a single mounted device values in KB
-func Df(mountPoint string) (f DiskFree, err error) {
+// NewDf returns the disk free information for specified mount point in 1KB blocks
+func NewDf(mountPoint string) (f *DiskFree, err error) {
 	s := syscall.Statfs_t{}
 	if err = syscall.Statfs(mountPoint, &s); err != nil {
 		return f, err
 	}
 
-	f = DiskFree{
-		Total: (int64(s.Blocks) * s.Bsize) / KB,
-		Used:  (int64(s.Blocks-s.Bfree) * s.Bsize) / KB,
+	f = &DiskFree{
+		total: (float64(s.Blocks) * float64(s.Bsize)),
+		used:  (float64(s.Blocks-s.Bfree) * float64(s.Bsize)),
 	}
 
-	f.Avail = f.Total - f.Used
-	f.PercentUsed = int(math.Ceil(float64(f.Used) / float64(f.Total) * 100))
+	f.avail = f.total - f.used
+	f.percentUsed = int(math.Ceil(float64(f.used) / float64(f.total) * 100))
 
 	return f, err
+}
+
+// Total takes a value type (fs.MB, fs.GB etc) and returns the appropriate value.
+// Example:
+//    df, _ := fs.NewDf("/mnt/fs")
+//    fmt.Println(df.Total(fs.GB))
+//
+// Floats are used in order to allow for a reasonable degree of accuracy when
+// dealing with large value numbers i.e GB and TB etc...
+func (df *DiskFree) Total(valType float64) float64 {
+	return df.total / valType
+}
+
+// Used works the same way as Total but returns the amount of space currently used.
+func (df *DiskFree) Used(valType float64) float64 {
+	return df.used / valType
+}
+
+// Avail works as above but returns the amount of space available
+func (df *DiskFree) Avail(valType float64) float64 {
+	return df.avail / valType
+}
+
+// PercentUsed returns the percentage of space used as an int
+func (df *DiskFree) PercentUsed() int {
+	return df.percentUsed
 }
 
 // GetBinPath returns the absolute path to the directory of the running binary
