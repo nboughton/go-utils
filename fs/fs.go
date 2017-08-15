@@ -1,4 +1,4 @@
-// Package fs is for utility functions related to dealing the filesystem
+// Package fs is for utility functions related to dealing with Linux filesystems
 package fs
 
 import (
