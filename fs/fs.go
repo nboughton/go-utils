@@ -134,6 +134,7 @@ func Uname(f os.FileInfo) string {
 	return u.Username
 }
 
+// ageIncrement provides a specific type for file age calculations
 type ageIncrement int
 
 // Exported constants for file age calculation MONTH is omitted as months can
