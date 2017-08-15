@@ -131,7 +131,7 @@ func Uname(f os.FileInfo) string {
 	return u.Username
 }
 
-type ageIncrement float64
+type ageIncrement int
 
 // Exported constants for file age calculation MONTH is omitted as months can
 // have variable lengths. Technically years can vary but the difference is
