@@ -144,6 +144,9 @@ const (
 )
 
 // Age returns the age of file f in the given increment valType
+// Example:
+//    f, _ := os.Stat("/path/to/file")
+//    fmt.Println(fs.Age(f, fs.WEEK))
 func Age(f os.FileInfo, valType ageIncrement) float64 {
 	return time.Now().Sub(f.ModTime()).Hours() / float64(valType)
 }
