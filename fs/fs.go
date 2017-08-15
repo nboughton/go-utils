@@ -134,7 +134,8 @@ func Uname(f os.FileInfo) string {
 type ageIncrement float64
 
 // Exported constants for file age calculation MONTH is omitted as months can
-// have variable lengths
+// have variable lengths. Technically years can vary but the difference is
+// essentially a rounding error in the grand scheme of things.
 const (
 	HOUR ageIncrement = 1
 	DAY               = HOUR * 24
