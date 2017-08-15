@@ -133,7 +133,8 @@ func Uname(f os.FileInfo) string {
 
 type ageIncrement float64
 
-// Exported constants for file age calculation
+// Exported constants for file age calculation MONTH is omitted as months can
+// have variable lengths
 const (
 	HOUR ageIncrement = 1
 	DAY               = HOUR * 24
