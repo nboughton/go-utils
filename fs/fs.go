@@ -21,16 +21,16 @@ type DiskFree struct {
 	percentUsed int
 }
 
-// sizeIncrement provides a specific type for data size category conversion
-type sizeIncrement int64
+// sizeCategory provides a specific type for data size category conversion
+type sizeCategory int64
 
 // Exported constants for file size calculations
 const (
-	KB sizeIncrement = 1024    // Kilobyte
-	MB               = KB * KB // Megabyte
-	GB               = MB * KB // Gigabyte
-	TB               = GB * KB // Terabyte
-	PB               = TB * KB // Petabyte
+	KB sizeCategory = 1024    // Kilobyte
+	MB              = KB * KB // Megabyte
+	GB              = MB * KB // Gigabyte
+	TB              = GB * KB // Terabyte
+	PB              = TB * KB // Petabyte
 )
 
 // NewDf creates a DiskFree struct for the specified mount point. One can then use the
@@ -59,7 +59,7 @@ func NewDf(mountPoint string) (f *DiskFree, err error) {
 // Example:
 //    df, _ := fs.NewDf("/mnt/fs")
 //    fmt.Println(df.Total(fs.GB))
-func (df *DiskFree) Total(valType sizeIncrement) float64 {
+func (df *DiskFree) Total(valType sizeCategory) float64 {
 	return df.total / float64(valType)
 }
 
@@ -68,7 +68,7 @@ func (df *DiskFree) Total(valType sizeIncrement) float64 {
 // Example:
 //    df, _ := fs.NewDf("/mnt/fs")
 //    fmt.Println(df.Used(fs.GB))
-func (df *DiskFree) Used(valType sizeIncrement) float64 {
+func (df *DiskFree) Used(valType sizeCategory) float64 {
 	return df.used / float64(valType)
 }
 
@@ -77,7 +77,7 @@ func (df *DiskFree) Used(valType sizeIncrement) float64 {
 // Example:
 //    df, _ := fs.NewDf("/mnt/fs")
 //    fmt.Println(df.Avail(fs.GB))
-func (df *DiskFree) Avail(valType sizeIncrement) float64 {
+func (df *DiskFree) Avail(valType sizeCategory) float64 {
 	return df.avail / float64(valType)
 }
 
@@ -134,17 +134,17 @@ func Uname(f os.FileInfo) string {
 	return u.Username
 }
 
-// ageIncrement provides a specific type for file age calculations
-type ageIncrement int
+// ageCategory provides a specific type for file age calculations
+type ageCategory int
 
 // Exported constants for file age calculation MONTH is omitted as months can
 // have variable lengths. Technically years can vary but the difference is
 // essentially a rounding error in the grand scheme of things.
 const (
-	HOUR ageIncrement = 1
-	DAY               = HOUR * 24
-	WEEK              = DAY * 7
-	YEAR              = WEEK * 52
+	HOUR  ageCategory = 1
+	DAYS              = HOUR * 24
+	WEEKS             = DAYS * 7
+	YEARS             = WEEKS * 52
 )
 
 // Age returns the age of file f in the given increment valType.
@@ -152,6 +152,6 @@ const (
 // Example:
 //    f, _ := os.Stat("/path/to/file")
 //    fmt.Println(fs.Age(f, fs.WEEK))
-func Age(f os.FileInfo, valType ageIncrement) float64 {
+func Age(f os.FileInfo, valType ageCategory) float64 {
 	return time.Now().Sub(f.ModTime()).Hours() / float64(valType)
 }
