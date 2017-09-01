@@ -12,4 +12,6 @@ var (
 	Yes     = regexp.MustCompile(`(?i)^y(es|)$`)
 	No      = regexp.MustCompile(`(?i)^n(o|)$`)
 	HTMLTag = regexp.MustCompile(`(<[^>]*>)`)
+	ASCII   = regexp.MustCompile(`[\x00-\x7F]`)
+	ANSI    = regexp.MustCompile(`\x1b[^m]*m`)
 )
