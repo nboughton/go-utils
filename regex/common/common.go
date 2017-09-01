@@ -6,12 +6,16 @@ import (
 	"regexp"
 )
 
-// Exported vars all common regex patterns
+// Exported vars
 var (
-	YN      = regexp.MustCompile(`(?i)^(y(es|)|n(o|))$`)
-	Yes     = regexp.MustCompile(`(?i)^y(es|)$`)
-	No      = regexp.MustCompile(`(?i)^n(o|)$`)
+	// Matchers yes/no strings
+	YN  = regexp.MustCompile(`(?i)^(y(es|)|n(o|))$`)
+	Yes = regexp.MustCompile(`(?i)^y(es|)$`)
+	No  = regexp.MustCompile(`(?i)^n(o|)$`)
+	// Matcher for HTML tags
 	HTMLTag = regexp.MustCompile(`(<[^>]*>)`)
-	ASCII   = regexp.MustCompile(`[\x00-\x7F]`)
-	ANSI    = regexp.MustCompile(`\x1b[^m]*m`)
+	// Matcher for ASCII chars
+	ASCII = regexp.MustCompile(`[\x00-\x7F]`)
+	// Matcher for ANSI escape chars (colors etc)
+	ANSI = regexp.MustCompile(`\x1b[^m]*m`)
 )
