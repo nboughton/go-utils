@@ -106,8 +106,8 @@ func Mounts() (m []Mount, err error) {
 
 		if len(f) == 6 {
 			m = append(m, Mount{
-				Point:  f[2],
 				Device: f[0],
+				Point:  f[2],
 				Type:   f[4],
 				Args:   strings.Split(strings.Trim(f[5], "()"), ","),
 			})
