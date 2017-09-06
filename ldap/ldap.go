@@ -27,11 +27,11 @@ var (
 func ConnectTLS(c Config) (*Conn, error) {
 	l, err := ldap.DialTLS("tcp", fmt.Sprintf("%s:%d", c.Host, c.Port), &tls.Config{InsecureSkipVerify: true})
 	if err != nil {
-		return &Conn{}, err
+		return &Conn{}, fmt.Errorf("Dial error: %s", err)
 	}
 
 	if err := l.Bind(fmt.Sprintf("cn=%s,%s", c.User, c.BaseDN), c.Pass); err != nil {
-		return &Conn{}, err
+		return &Conn{}, fmt.Errorf("Bind error: %s", err)
 	}
 
 	return &Conn{l, c}, nil
@@ -42,7 +42,7 @@ func Connect(c Config) (*Conn, error) {
 	// Anonymous LDAP connection
 	l, err := ldap.Dial("tcp", fmt.Sprintf("%s:%d", c.Host, c.Port))
 	if err != nil {
-		return &Conn{}, err
+		return &Conn{}, fmt.Errorf("Dial error: %s", err)
 	}
 	return &Conn{l, c}, nil
 }
