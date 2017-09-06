@@ -128,10 +128,13 @@ func UID(f os.FileInfo) int {
 }
 
 // Uname returns the Unix username of the owner of file f
-func Uname(f os.FileInfo) string {
+func Uname(f os.FileInfo) (string, error) {
 	uid := strconv.Itoa(UID(f))
-	u, _ := user.LookupId(uid)
-	return u.Username
+	u, err := user.LookupId(uid)
+	if err != nil {
+		return "", err
+	}
+	return u.Username, nil
 }
 
 // ageCategory provides a specific type for file age calculations
