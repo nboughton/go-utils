@@ -6,12 +6,13 @@ import (
 	"errors"
 	"fmt"
 	"net/smtp"
+	"strings"
 )
 
 var (
 	mailHost = ""
 	// ErrNoMailHost gets returned when the mailHost has not been set
-	ErrNoMailHost = errors.New("No mail host set. Use mail.SetHost to assign a mail host")
+	ErrNoMailHost = errors.New("No mail host set. Use mail.SetHost() to assign a mail host")
 )
 
 // SetHost allows the developer to set the mail host through which sent mail is routed
@@ -22,13 +23,13 @@ func SetHost(str string) {
 // Send provides a wrapper for the usual boilerplate to reduce the
 // hassle of programatically sending emails. Don't forget to assign
 // a mailhost BEFORE attempting to send mail
-func Send(from, to, subject, msg string) error {
+func Send(from, to, subject, msg string, cc []string) error {
 	if mailHost == "" {
 		return ErrNoMailHost
 	}
 
 	// Format the msg text so we get a subject
-	msgFmt := fmt.Sprintf("To: %s\r\nSubject: %s\r\n\r\n%s\r\n", to, subject, msg)
+	msgFmt := fmt.Sprintf("To: %s\r\nCC: %s\r\nSubject: %s\r\n\r\n%s\r\n", to, strings.Join(cc, ","), subject, msg)
 
 	// Connect to mail host
 	c, err := smtp.Dial(fmt.Sprintf("%s:25", mailHost))
