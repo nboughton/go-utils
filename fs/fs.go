@@ -21,16 +21,16 @@ type DiskFree struct {
 	percentUsed int
 }
 
-// sizeCategory provides a specific type for data size category conversion
-type sizeCategory int64
+// size provides a specific type for data size category conversion
+type size int64
 
 // Exported constants for file size calculations
 const (
-	KB sizeCategory = 1024    // Kilobyte
-	MB              = KB * KB // Megabyte
-	GB              = MB * KB // Gigabyte
-	TB              = GB * KB // Terabyte
-	PB              = TB * KB // Petabyte
+	KB size = 1024    // Kilobyte
+	MB      = KB * KB // Megabyte
+	GB      = MB * KB // Gigabyte
+	TB      = GB * KB // Terabyte
+	PB      = TB * KB // Petabyte
 )
 
 // NewDf creates a DiskFree struct for the specified mount point. One can then use the
@@ -54,31 +54,31 @@ func NewDf(mountPoint string) (f *DiskFree, err error) {
 	return f, err
 }
 
-// Total takes a value type (fs.MB, fs.GB etc) and returns the amount of total space
+// Total takes a size (fs.MB, fs.GB etc) and returns the amount of total space
 //
 // Example:
 //    df, _ := fs.NewDf("/mnt/fs")
 //    fmt.Println(df.Total(fs.GB))
-func (df *DiskFree) Total(valType sizeCategory) float64 {
-	return df.total / float64(valType)
+func (df *DiskFree) Total(s size) float64 {
+	return df.total / float64(s)
 }
 
-// Used takes a value type (fs.MB, fs.GB etc) and returns the amount of space used.
+// Used takes a size (fs.MB, fs.GB etc) and returns the amount of space used.
 //
 // Example:
 //    df, _ := fs.NewDf("/mnt/fs")
 //    fmt.Println(df.Used(fs.GB))
-func (df *DiskFree) Used(valType sizeCategory) float64 {
-	return df.used / float64(valType)
+func (df *DiskFree) Used(s size) float64 {
+	return df.used / float64(s)
 }
 
-// Avail takes a value type (fs.MB, fs.GB etc) and returns the amount of space available.
+// Avail takes a size (fs.MB, fs.GB etc) and returns the amount of space available.
 //
 // Example:
 //    df, _ := fs.NewDf("/mnt/fs")
 //    fmt.Println(df.Avail(fs.GB))
-func (df *DiskFree) Avail(valType sizeCategory) float64 {
-	return df.avail / float64(valType)
+func (df *DiskFree) Avail(s size) float64 {
+	return df.avail / float64(s)
 }
 
 // PercentUsed returns the percentage of space used as an int
@@ -137,24 +137,24 @@ func Uname(f os.FileInfo) (string, error) {
 	return u.Username, nil
 }
 
-// ageCategory provides a specific type for file age calculations
-type ageCategory int
+// duration provides a specific type for file age calculations
+type duration float64
 
 // Exported constants for file age calculation MONTH is omitted as months can
 // have variable lengths. Technically years can vary but the difference is
 // essentially a rounding error in the grand scheme of things.
 const (
-	HOUR  ageCategory = 1
-	DAYS              = HOUR * 24
-	WEEKS             = DAYS * 7
-	YEARS             = WEEKS * 52
+	HOUR  duration = 1
+	DAYS           = 24 * HOUR
+	WEEKS          = 7 * DAYS
+	YEARS          = 365.242199 * DAYS
 )
 
-// Age returns the age of file f in the given increment valType.
+// Age returns the age of file f in the given increment s.
 //
 // Example:
 //    f, _ := os.Stat("/path/to/file")
 //    fmt.Println(fs.Age(f, fs.WEEK))
-func Age(f os.FileInfo, valType ageCategory) float64 {
-	return time.Now().Sub(f.ModTime()).Hours() / float64(valType)
+func Age(f os.FileInfo, d duration) float64 {
+	return time.Now().Sub(f.ModTime()).Hours() / float64(d)
 }
