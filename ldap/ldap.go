@@ -37,7 +37,8 @@ func ConnectTLS(c Config) (*Conn, error) {
 	return &Conn{l, c}, nil
 }
 
-// Connect requests and anonymous binding that requires only a Host and Port. This can only be used to run queries
+// Connect will attempt to create an unencrypted dial connection to the server. You may need to manually bind
+// afterwards in order to
 func Connect(c Config) (*Conn, error) {
 	// Anonymous LDAP connection
 	l, err := ldap.Dial("tcp", fmt.Sprintf("%s:%d", c.Host, c.Port))
@@ -82,7 +83,7 @@ func (l *Conn) GetEntry(UIDnum uint32, UIDStr string, attr []string) (*Entry, er
 		for _, e := range res.Entries {
 			uids = append(uids, e.GetAttributeValue("uid"))
 		}
-		return &Entry{&ldap.Entry{}, l}, fmt.Errorf("%d results matched for (%d/%s): %v\n", len(uids), UIDnum, UIDStr, uids)
+		return &Entry{&ldap.Entry{}, l}, fmt.Errorf("%d results matched for (%d/%s): %v", len(uids), UIDnum, UIDStr, uids)
 	}
 
 	return &Entry{res.Entries[0], l}, nil
@@ -98,7 +99,7 @@ func selectUIDFilter(n uint32, s string) string {
 // Entry wraps ldap.Entry so that it can be extended
 type Entry struct {
 	*ldap.Entry
-	*Conn
+	C *Conn
 }
 
 // Update updates an ldap entry
@@ -121,11 +122,11 @@ func (e *Entry) Update(attr string, data []string, overwrite bool) error {
 			m.Add(attr, data)
 		}
 
-		if err := e.Modify(m); err != nil {
+		if err := e.C.Modify(m); err != nil {
 			return fmt.Errorf("Could not modify LDAP record: %s", err)
 		}
 	} else if !overwrite && exists {
-		return fmt.Errorf("Data exists and overwrite not set. No change made.")
+		return fmt.Errorf("data exists and overwrite not set. No change made")
 	}
 
 	return nil

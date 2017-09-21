@@ -144,8 +144,8 @@ type duration float64
 // have variable lengths. Technically years can vary but the difference is
 // essentially a rounding error in the grand scheme of things.
 const (
-	HOUR  duration = 1
-	DAYS           = 24 * HOUR
+	HOURS duration = 1
+	DAYS           = 24 * HOURS
 	WEEKS          = 7 * DAYS
 	YEARS          = 365.242199 * DAYS
 )
