@@ -40,9 +40,5 @@ func Write(path string, v interface{}) error {
 	}
 
 	_, err = f.Write(b)
-	if err != nil {
-		return err
-	}
-
-	return nil
+	return err
 }

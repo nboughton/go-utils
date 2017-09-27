@@ -1,4 +1,6 @@
 // Package mail is for removing the need to write boilerplate when sending email from a CLI app
+// This implementation only allows for anonymous connection to a mailserver and is of limited value
+// I will probably improve it at some point but for now it serves my purposes.
 package mail
 
 import (

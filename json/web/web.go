@@ -1,4 +1,5 @@
-// Package web is for creating and returning json encoded data in web applications
+// Package web is for creating and returning json encoded data in web applications. The
+// New function returns a pointer so that it can be chained directly with the Write method.
 package web
 
 import (
