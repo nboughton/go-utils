@@ -96,7 +96,8 @@ func selectUIDFilter(n uint32, s string) string {
 	return fmt.Sprintf("(uidNumber=%d)", n)
 }
 
-// Entry wraps ldap.Entry so that it can be extended
+// Entry wraps ldap.Entry so that it can be extended and provides the access to the current ldap Conn
+// struct in order to provide convenience in wrapping functions.
 type Entry struct {
 	*ldap.Entry
 	C *Conn
