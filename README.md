@@ -17,9 +17,5 @@ wrapping json data and writing it to a http.ResponseWriter
 ## ldap
 Wraps ldap connection, entry requests and entry updates for very general usage
 
-## mail
-Provides a wrapper function for the longform boilerplate of automating sending 
-emails programmatically
-
 ## regex
 Provides a library of common regexes for CLI input validation, matching html tags etc
