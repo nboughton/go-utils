@@ -156,5 +156,5 @@ const (
 //    f, _ := os.Stat("/path/to/file")
 //    fmt.Println(fs.Age(f, fs.WEEK))
 func Age(f os.FileInfo, d duration) float64 {
-	return time.Now().Sub(f.ModTime()).Hours() / float64(d)
+	return time.Since(f.ModTime()).Hours() / float64(d)
 }
