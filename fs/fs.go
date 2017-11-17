@@ -158,3 +158,18 @@ const (
 func Age(f os.FileInfo, d duration) float64 {
 	return time.Since(f.ModTime()).Hours() / float64(d)
 }
+
+// IsSymlink tests a filepath to see if it is a symlink or not. Returns err if
+// it cannot stat the file
+func IsSymlink(path string) (bool, error) {
+	f, err := os.Lstat(path)
+	if err != nil {
+		return false, err
+	}
+
+	if f.Mode()&os.ModeSymlink != 0 {
+		return true, nil
+	}
+
+	return false, nil
+}
