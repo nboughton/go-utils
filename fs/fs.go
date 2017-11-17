@@ -43,8 +43,8 @@ func Mounts() (m []Mount, err error) {
 	return m, nil
 }
 
-// BinPath returns the absolute path to the directory of the running binary
-func BinPath() (string, error) {
+// AbsPath returns the absolute path to the directory of the running binary
+func AbsPath() (string, error) {
 	return filepath.Abs(filepath.Dir(os.Args[0]))
 }
 
@@ -63,28 +63,6 @@ func Uname(f os.FileInfo) (string, error) {
 	return u.Username, nil
 }
 
-// duration provides a specific type for file age calculations
-type duration float64
-
-// Exported constants for file age calculation MONTH is omitted as months can
-// have variable lengths. Technically years can vary but the difference is
-// essentially a rounding error in the grand scheme of things.
-const (
-	HOURS duration = 1
-	DAYS           = 24 * HOURS
-	WEEKS          = 7 * DAYS
-	YEARS          = 365.242199 * DAYS
-)
-
-// Age returns the age of file f in the given increment s.
-//
-// Example:
-//    f, _ := os.Stat("/path/to/file")
-//    fmt.Println(fs.Age(f, fs.WEEK))
-func Age(f os.FileInfo, d duration) float64 {
-	return time.Since(f.ModTime()).Hours() / float64(d)
-}
-
 // IsSymlink tests a filepath to see if it is a symlink or not. Returns err if
 // it cannot stat the file
 func IsSymlink(path string) (bool, error) {
@@ -99,3 +77,25 @@ func IsSymlink(path string) (bool, error) {
 
 	return false, nil
 }
+
+// Age returns the age of file f in the given increment s.
+//
+// Example:
+//    f, _ := os.Stat("/path/to/file")
+//    fmt.Println(fs.Age(f, fs.WEEK))
+func Age(f os.FileInfo, d duration) float64 {
+	return time.Since(f.ModTime()).Hours() / float64(d)
+}
+
+// duration provides a specific type for file age calculations
+type duration float64
+
+// Exported constants for file age calculation MONTH is omitted as months can
+// have variable lengths. Technically years can vary but the difference is
+// essentially a rounding error in the grand scheme of things.
+const (
+	HOURS duration = 1
+	DAYS           = 24 * HOURS
+	WEEKS          = 7 * DAYS
+	YEARS          = 365.242199 * DAYS
+)
