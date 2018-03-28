@@ -83,8 +83,14 @@ func IsSymlink(path string) (bool, error) {
 // Example:
 //    f, _ := os.Stat("/path/to/file")
 //    fmt.Println(fs.Age(f, fs.WEEK))
-func Age(f os.FileInfo, d duration) float64 {
-	return time.Since(f.ModTime()).Hours() / float64(d)
+func Age(f os.FileInfo, d duration) (aTime, mTime, cTime float64) {
+	stat := f.Sys().(*syscall.Stat_t)
+
+	aTime = time.Since(time.Unix(stat.Atim.Sec, stat.Atim.Nsec)).Hours() / float64(d)
+	mTime = time.Since(f.ModTime()).Hours() / float64(d)
+	cTime = time.Since(time.Unix(stat.Ctim.Sec, stat.Ctim.Nsec)).Hours() / float64(d)
+
+	return
 }
 
 // duration provides a specific type for file age calculations
