@@ -3,23 +3,17 @@
 package file
 
 import (
-	"bufio"
 	"bytes"
 	"encoding/json"
+	"io/ioutil"
 	"os"
 )
 
 // Scan decodes a JSON file into a struct pointer
 func Scan(file string, o interface{}) error {
-	f, err := os.Open(file)
+	b, err := ioutil.ReadFile(file)
 	if err != nil {
 		return err
-	}
-	defer f.Close()
-
-	s, b := bufio.NewScanner(f), []byte{}
-	for s.Scan() {
-		b = append(b, s.Bytes()...)
 	}
 
 	return json.NewDecoder(bytes.NewReader(b)).Decode(&o)
