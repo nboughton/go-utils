@@ -28,7 +28,7 @@ func Write(path string, v interface{}) error {
 	}
 	defer f.Close()
 
-	b, err := json.Marshal(v)
+	b, err := json.MarshalIndent(v, "", "  ")
 	if err != nil {
 		return err
 	}
