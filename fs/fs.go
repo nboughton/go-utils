@@ -63,6 +63,21 @@ func Uname(f os.FileInfo) (string, error) {
 	return u.Username, nil
 }
 
+// GID returns the GID of the file
+func GID(f os.FileInfo) int {
+	return int(f.Sys().(*syscall.Stat_t).Gid)
+}
+
+// Gname returns the human readable group name of a file
+func Gname(f os.FileInfo) (string, error) {
+	gid := strconv.Itoa(GID(f))
+	g, err := user.LookupGroupId(gid)
+	if err != nil {
+		return "", err
+	}
+	return g.Name, nil
+}
+
 // IsSymlink tests a filepath to see if it is a symlink or not. Returns err if
 // it cannot stat the file
 func IsSymlink(path string) (bool, error) {
